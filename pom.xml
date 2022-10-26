@@ -59,6 +59,7 @@
     <clover.license>${user.home}/clover.license</clover.license>
     <guava.version>32.0.1-jre</guava.version>
     <hadoop.version>3.2.3.3.2.3.2-3</hadoop.version>
+    <mockito-core.version>4.3.1</mockito-core.version>
     <netty.version>4.1.94.Final</netty.version>
     <pig.version>0.13.0</pig.version>
     <jersey.version>1.19</jersey.version>
@@ -799,7 +800,7 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>4.3.1</version>
+        <version>${mockito-core.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
