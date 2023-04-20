@@ -630,6 +630,7 @@ public class TestDAGAppMaster {
   public static class DAGAppMasterForTest extends DAGAppMaster {
     private DAGAppMasterShutdownHandler mockShutdown;
     private TaskSchedulerManager mockScheduler = mock(TaskSchedulerManager.class);
+    private DAGAppMasterReadinessService mockAppMasterReadinessService = mock(DAGAppMasterReadinessService.class);
 
     public DAGAppMasterForTest(ApplicationAttemptId attemptId, boolean isSession) {
       super(attemptId, ContainerId.newContainerId(attemptId, 1), "hostname", 12345, 12346,
@@ -673,6 +674,11 @@ public class TestDAGAppMaster {
     protected TaskSchedulerManager createTaskSchedulerManager(
         List<NamedEntityDescriptor> taskSchedulerDescriptors) {
       return mockScheduler;
+    }
+
+    @Override
+    protected DAGAppMasterReadinessService createAppMasterReadinessService() {
+      return mockAppMasterReadinessService;
     }
   }
 }
