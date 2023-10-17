@@ -25,9 +25,8 @@ public class AdTezHook extends ProtoHistoryLoggingService {
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private static AdNatsClient natsClient = null;
-    private static Connection natsConnection = null;
-    private static JetStream jetStream = null;
     private String clusterName = null;
+    private String natsServerListCSV = null;
     private String natsWorkQueue = "tez_queries_history_events";
     private String natsWorkQueueEndpoint = "tez_queries_history_events_endpoint";
     private Configuration conf;
@@ -35,14 +34,6 @@ public class AdTezHook extends ProtoHistoryLoggingService {
     private boolean persistToHDFS;
 
     private static final PublishOptions publishOptions = new PublishOptions.Builder().streamTimeout(java.time.Duration.ofSeconds(5)).build();
-
-    private static Connection initializeNatsClient() {
-        if (null != natsConnection && natsConnection.getStatus() == Connection.Status.CONNECTED) {
-            return natsConnection;
-        } else {
-            return natsClient.connectToNATS();
-        }
-    }
 
     private static Set<HistoryEventType> eventsOfInterest() {
         return new HashSet<HistoryEventType>(Arrays.asList(
@@ -57,22 +48,14 @@ public class AdTezHook extends ProtoHistoryLoggingService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AdTezHook.class);
 
-    private static JetStream getJetStream() throws Exception {
-        return natsConnection.jetStream();
-    }
-
     public boolean registerNatsResources(String[] natsServers, String clusterName) {
         LOG.debug("Going to execute registerNatsResources");
-        if (null == natsClient || !natsClient.isNatsConnected()) {
             try {
                 natsClient = new AdNatsClient(natsServers);
-                natsConnection = initializeNatsClient();
-                jetStream = getJetStream();
             } catch (Exception e) {
                 LOG.warn("Exception in initializing Nats Resources, failed with exception ", e);
                 return false;
             }
-        }
 
         String workQueue = natsWorkQueue + "_" + clusterName;
         String workQueueEndpoint = natsWorkQueueEndpoint + "_" + clusterName;
@@ -110,7 +93,7 @@ public class AdTezHook extends ProtoHistoryLoggingService {
         this.persistToHDFS = serviceConf.getBoolean("ad.hdfs.sink", true);
         try {
             this.clusterName = serviceConf.get("ad.cluster");
-            String natsServerListCSV = serviceConf.get("ad.events.streaming.servers");
+            this.natsServerListCSV = serviceConf.get("ad.events.streaming.servers");
             registerNatsResources(natsServerListCSV.split(","), clusterName);
         } catch (Exception e) {
             LOG.debug("Exception in initializing Nats Resources, failed with exception", e);
@@ -298,6 +281,14 @@ public class AdTezHook extends ProtoHistoryLoggingService {
     @Override
     public void handle(org.apache.tez.dag.history.DAGHistoryEvent event) {
 
+        JetStream jetStream;
+        try {
+            jetStream = natsClient.getConnection().jetStream();
+        } catch (Exception e) {
+            LOG.warn("Exception in initializing Nats jetstream, failed with exception ", e);
+            return;
+        }
+
         long timePoint = System.currentTimeMillis();
         if (this.persistToHDFS) {
             super.handle(event);
@@ -347,7 +338,7 @@ public class AdTezHook extends ProtoHistoryLoggingService {
                             new Long(ack.getSeqno()).toString().getBytes("UTF-8"), publishOptions);
                 }
                 if (eventType == HistoryEventType.DAG_FINISHED) {
-                    natsClient.closeNATSConnection(natsConnection);
+                    natsClient.closeNATSConnection();
                 }
                 payload = null;
                 LOG.info("Streaming cost: " + (System.currentTimeMillis() - timePoint));
