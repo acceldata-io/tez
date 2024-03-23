@@ -91,6 +91,7 @@
     <netty.version>4.1.100.Final</netty.version>
     <pig.version>0.13.0</pig.version>
     <protobuf.version>3.24.4</protobuf.version>
+    <snappy-java.version>1.1.10.4</snappy-java.version>
     <protoc-jar-maven-plugin.version>3.11.4</protoc-jar-maven-plugin.version>
     <protoc.path>${env.PROTOC_PATH}</protoc.path>
     <restrict-imports.enforcer.version>2.0.0</restrict-imports.enforcer.version>
@@ -377,6 +378,14 @@
             <groupId>io.netty</groupId>
             <artifactId>*</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.xerial.snappy</groupId>
+            <artifactId>snappy-java</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -387,6 +396,10 @@
           <exclusion>
             <groupId>io.netty</groupId>
             <artifactId>netty</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -1364,6 +1377,11 @@
           <artifactId>hadoop-azure-datalake</artifactId>
           <scope>runtime</scope>
           <version>${hadoop.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.xerial.snappy</groupId>
+          <artifactId>snappy-java</artifactId>
+          <version>${snappy-java.version}</version>
         </dependency>
       </dependencies>
     </profile>
