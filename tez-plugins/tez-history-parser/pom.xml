@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.tez</groupId>
     <artifactId>tez-plugins</artifactId>
-    <version>0.10.1.3.3.0.0-SNAPSHOT</version>
+    <version>0.10.1.3.2.3.0-2</version>
   </parent>
   <artifactId>tez-history-parser</artifactId>
 
