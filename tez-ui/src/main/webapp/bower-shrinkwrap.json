@@ -2,8 +2,14 @@
   "https://github.com/FortAwesome/Font-Awesome.git": {
     "4.5.0": "593ad563a987977f14102be935d0abc2a172903e"
   },
+  "https://github.com/SheetJS/js-xlsx.git": {
+    "0.11.19": "75845a0ca722b634dd39993958ccf813a9649405"
+  },
   "https://github.com/adamwdraper/Numeral-js.git": {
     "1.5.3": "f97f14bb8bab988f28f1d854525b4cfeff8ec9e1"
+  },
+  "https://github.com/agershun/alasql.git": {
+    "0.4.11": "d9689bf75419606a53d006f2638d296457f5446d"
   },
   "https://github.com/components/codemirror.git": {
     "5.11.0": "7d43f32bb56f83a9c47addb3f91170b3102f3ead"
@@ -13,6 +19,9 @@
   },
   "https://github.com/components/ember.git": {
     "2.2.0": "49e042ca89922ed96b27488c2a98add280ae7123"
+  },
+  "https://github.com/components/es6-promise.git": {
+    "3.0.2": "d4eeb5879854d88c350225b5b993814bd075c2fa"
   },
   "https://github.com/components/jqueryui.git": {
     "1.11.4": "c34f8dbf3ba57b3784b93f26119f436c0e8288e1"

@@ -41,8 +41,9 @@
 
   <properties>
     <!-- Build Properties -->
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
     <surefire.version>3.0.0-M4</surefire.version>
     <failIfNoTests>false</failIfNoTests>
@@ -1240,6 +1241,7 @@
             <configuration>
               <fork>true</fork>
               <compilerArguments>
+	        <arg>--add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
                 <Xlint/>
                 <Xmaxwarns>9999</Xmaxwarns>
               </compilerArguments>
