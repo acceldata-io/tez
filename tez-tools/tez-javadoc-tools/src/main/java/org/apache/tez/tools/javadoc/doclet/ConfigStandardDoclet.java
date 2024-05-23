@@ -19,8 +19,13 @@
 package org.apache.tez.tools.javadoc.doclet;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+
+import javax.lang.model.element.*;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.ElementFilter;
+import javax.tools.Diagnostic;
+import javax.tools.JavaFileObject;
 
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Evolving;
@@ -32,22 +37,21 @@ import org.apache.tez.tools.javadoc.model.ConfigProperty;
 import org.apache.tez.tools.javadoc.util.HtmlWriter;
 import org.apache.tez.tools.javadoc.util.XmlWriter;
 
-import com.sun.javadoc.AnnotationDesc;
-import com.sun.javadoc.AnnotationDesc.ElementValuePair;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.DocErrorReporter;
-import com.sun.javadoc.FieldDoc;
-import com.sun.javadoc.LanguageVersion;
-import com.sun.javadoc.RootDoc;
-import com.sun.tools.doclets.standard.Standard;
+import jdk.javadoc.doclet.Doclet;
+import jdk.javadoc.doclet.StandardDoclet;
+import jdk.javadoc.doclet.DocletEnvironment;
+import jdk.javadoc.doclet.Reporter;
 
-public class ConfigStandardDoclet {
+public class ConfigStandardDoclet extends StandardDoclet {
 
   private static final String DEBUG_SWITCH = "-debug";
   private static boolean debugMode = false;
+  private DocletEnvironment docEnv;
+  private Reporter reporter;
 
-  public static LanguageVersion languageVersion() {
-    return LanguageVersion.JAVA_1_5;
+  public void init(DocletEnvironment docEnv, Reporter reporter) {
+    this.docEnv = docEnv;
+    this.reporter = reporter;
   }
 
   private static void logMessage(String message) {
@@ -57,43 +61,34 @@ public class ConfigStandardDoclet {
     System.out.println(message);
   }
 
-  public static boolean start(RootDoc root) {
-    //look for debug flag
-    for (String[] opts : root.options()) {
-      for (String opt : opts) {
-        if (opt.equals(DEBUG_SWITCH)) {
-          debugMode = true;
-        }
+  @Override
+  public boolean run(DocletEnvironment docEnv) {
+    this.docEnv = docEnv;
+
+    for (Element element : docEnv.getSpecifiedElements()) {
+      if (element.getKind() == ElementKind.CLASS) {
+        processDoc((TypeElement) element);
       }
     }
-
-    logMessage("Running doclet " + ConfigStandardDoclet.class.getSimpleName());
-    ClassDoc[] classes = root.classes();
-    for (int i = 0; i < classes.length; ++i) {
-      processDoc(classes[i]);
-    }
-
     return true;
   }
 
-  private static void processDoc(ClassDoc doc) {
+  private void processDoc(TypeElement doc) {
     logMessage("Parsing : " + doc);
-    if (!doc.isClass()) {
+    if (doc.getKind() != ElementKind.CLASS) {
       logMessage("Ignoring non-class: " + doc);
       return;
     }
 
-    AnnotationDesc[] annotations = doc.annotations();
     boolean isConfigClass = false;
     String templateName = null;
-    for (AnnotationDesc annotation : annotations) {
-      logMessage("Checking annotation: " + annotation.annotationType());
-      if (annotation.annotationType().qualifiedTypeName().equals(
-          ConfigurationClass.class.getName())) {
+    for (AnnotationMirror annotation : doc.getAnnotationMirrors()) {
+      logMessage("Checking annotation: " + annotation.getAnnotationType());
+      if (annotation.getAnnotationType().toString().equals(ConfigurationClass.class.getName())) {
         isConfigClass = true;
-        for (ElementValuePair element : annotation.elementValues()) {
-          if (element.element().name().equals("templateFileName")) {
-            templateName = stripQuotes(element.value().toString());
+        for (ExecutableElement element : annotation.getElementValues().keySet()) {
+          if (element.getSimpleName().toString().equals("templateFileName")) {
+            templateName = stripQuotes(annotation.getElementValues().get(element).toString());
           }
         }
         break;
@@ -106,47 +101,45 @@ public class ConfigStandardDoclet {
     }
 
     logMessage("Processing config class: " + doc);
-    Config config = new Config(doc.name(), templateName);
+    Config config = new Config(doc.getSimpleName().toString(), templateName);
     Map<String, ConfigProperty> configProperties = config.configProperties;
 
-    FieldDoc[] fields = doc.fields();
-    for (FieldDoc field : fields) {
-      if (field.isPrivate()) {
+    for (VariableElement field : ElementFilter.fieldsIn(doc.getEnclosedElements())) {
+      if (field.getModifiers().contains(Modifier.PRIVATE)) {
         logMessage("Skipping private field: " + field);
         continue;
       }
-      if (!field.isStatic()) {
+      if (!field.getModifiers().contains(Modifier.STATIC)) {
         logMessage("Skipping non-static field: " + field);
         continue;
       }
 
-      if (field.name().endsWith("_PREFIX")) {
+      if (field.getSimpleName().toString().endsWith("_PREFIX")) {
         logMessage("Skipping non-config prefix constant field: " + field);
         continue;
       }
-      if (field.name().equals("TEZ_SITE_XML")) {
+      if (field.getSimpleName().toString().equals("TEZ_SITE_XML")) {
         logMessage("Skipping constant field: " + field);
         continue;
       }
 
-      if (field.name().endsWith("_DEFAULT")) {
-
-        String name = field.name().substring(0,
-            field.name().lastIndexOf("_DEFAULT"));
+      if (field.getSimpleName().toString().endsWith("_DEFAULT")) {
+        String name = field.getSimpleName().toString().substring(0,
+                field.getSimpleName().toString().lastIndexOf("_DEFAULT"));
         if (!configProperties.containsKey(name)) {
           configProperties.put(name, new ConfigProperty());
         }
         ConfigProperty configProperty = configProperties.get(name);
-        if (field.constantValue() == null) {
+        if (field.getConstantValue() == null) {
           logMessage("Got null constant value"
-              + ", name=" + name
-              + ", field=" + field.name()
-              + ", val=" + field.constantValueExpression());
-          configProperty.defaultValue = field.constantValueExpression();
+                  + ", name=" + name
+                  + ", field=" + field.getSimpleName().toString()
+                  + ", val=" + field.getConstantValue());
+          configProperty.defaultValue = field.getConstantValue().toString();
         } else {
-          configProperty.defaultValue = field.constantValue().toString();
+          configProperty.defaultValue = field.getConstantValue().toString();
         }
-        configProperty.inferredType = field.type().simpleTypeName();
+        configProperty.inferredType = field.asType().toString();
 
         if (name.equals("TEZ_AM_STAGING_DIR") && configProperty.defaultValue != null) {
           String defaultValue = configProperty.defaultValue;
@@ -157,47 +150,39 @@ public class ConfigStandardDoclet {
         continue;
       }
 
-      String name = field.name();
+      String name = field.getSimpleName().toString();
       if (!configProperties.containsKey(name)) {
         configProperties.put(name, new ConfigProperty());
       }
       ConfigProperty configProperty = configProperties.get(name);
-      configProperty.propertyName = field.constantValue().toString();
+      configProperty.propertyName = field.getConstantValue().toString();
 
-      AnnotationDesc[] annotationDescs = field.annotations();
-
-      for (AnnotationDesc annotationDesc : annotationDescs) {
-
-        if (annotationDesc.annotationType().qualifiedTypeName().equals(
-            Private.class.getCanonicalName())) {
+      for (AnnotationMirror annotationDesc : field.getAnnotationMirrors()) {
+        if (annotationDesc.getAnnotationType().toString().equals(Private.class.getCanonicalName())) {
           configProperty.isPrivate = true;
         }
-        if (annotationDesc.annotationType().qualifiedTypeName().equals(
-            Unstable.class.getCanonicalName())) {
+        if (annotationDesc.getAnnotationType().toString().equals(Unstable.class.getCanonicalName())) {
           configProperty.isUnstable = true;
         }
-        if (annotationDesc.annotationType().qualifiedTypeName().equals(
-            Evolving.class.getCanonicalName())) {
+        if (annotationDesc.getAnnotationType().toString().equals(Evolving.class.getCanonicalName())) {
           configProperty.isEvolving = true;
         }
-        if (annotationDesc.annotationType().qualifiedTypeName().equals(
-            ConfigurationProperty.class.getCanonicalName())) {
+        if (annotationDesc.getAnnotationType().toString().equals(ConfigurationProperty.class.getCanonicalName())) {
           configProperty.isValidConfigProp = true;
 
           boolean foundType = false;
-          for (ElementValuePair element : annotationDesc.elementValues()) {
-            if (element.element().name().equals("type")) {
-              configProperty.type = stripQuotes(element.value().toString());
+          for (ExecutableElement element : annotationDesc.getElementValues().keySet()) {
+            if (element.getSimpleName().toString().equals("type")) {
+              configProperty.type = stripQuotes(annotationDesc.getElementValues().get(element).toString());
               foundType = true;
             } else {
-              logMessage("Unhandled annotation property: " + element.element().name());
+              logMessage("Unhandled annotation property: " + element.getSimpleName().toString());
             }
           }
         }
       }
 
-      configProperty.description = field.commentText();
-
+      configProperty.description = getDocComment(field);
     }
 
     HtmlWriter writer = new HtmlWriter();
@@ -213,21 +198,34 @@ public class ConfigStandardDoclet {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
 
+  private String getDocComment(Element element) {
+    return docEnv.getElementUtils().getDocComment(element);
   }
 
   private static String stripQuotes(String s) {
-    if (s.charAt(0) == '"' && s.charAt(s.length()-1) == '"') {
-      return s.substring(1, s.length()-1);
+    if (s.charAt(0) == '"' && s.charAt(s.length() - 1) == '"') {
+      return s.substring(1, s.length() - 1);
     }
     return s;
   }
 
-  public static int optionLength(String option) {
-    return Standard.optionLength(option);
+  public int optionLength(String option) {
+    if (option.equals(DEBUG_SWITCH)) {
+      return 1;
+    }
+    return 0;
   }
 
-  public static boolean validOptions(String options[][], DocErrorReporter reporter) {
+  public boolean validOptions(String[][] options, Reporter reporter) {
+    for (String[] opt : options) {
+      for (String o : opt) {
+        if (o.equals(DEBUG_SWITCH)) {
+          debugMode = true;
+        }
+      }
+    }
     return true;
   }
 }
