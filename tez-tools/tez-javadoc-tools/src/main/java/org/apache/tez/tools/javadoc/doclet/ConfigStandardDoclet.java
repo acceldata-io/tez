@@ -22,10 +22,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.lang.model.element.*;
-import javax.lang.model.util.Elements;
 import javax.lang.model.util.ElementFilter;
-import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
 
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Evolving;
