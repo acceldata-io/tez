@@ -37,7 +37,6 @@ import org.apache.tez.tools.javadoc.model.ConfigProperty;
 import org.apache.tez.tools.javadoc.util.HtmlWriter;
 import org.apache.tez.tools.javadoc.util.XmlWriter;
 
-import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.StandardDoclet;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
@@ -46,12 +45,11 @@ public class ConfigStandardDoclet extends StandardDoclet {
 
   private static final String DEBUG_SWITCH = "-debug";
   private static boolean debugMode = false;
-  private DocletEnvironment docEnv;
-  private Reporter reporter;
+  private static DocletEnvironment docEnv;
+
 
   public void init(DocletEnvironment docEnv, Reporter reporter) {
-    this.docEnv = docEnv;
-    this.reporter = reporter;
+    ConfigStandardDoclet.docEnv = docEnv;
   }
 
   private static void logMessage(String message) {
@@ -63,7 +61,7 @@ public class ConfigStandardDoclet extends StandardDoclet {
 
   @Override
   public boolean run(DocletEnvironment docEnv) {
-    this.docEnv = docEnv;
+    ConfigStandardDoclet.docEnv = docEnv;
 
     for (Element element : docEnv.getSpecifiedElements()) {
       if (element.getKind() == ElementKind.CLASS) {
@@ -73,7 +71,7 @@ public class ConfigStandardDoclet extends StandardDoclet {
     return true;
   }
 
-  private void processDoc(TypeElement doc) {
+  private static void processDoc(TypeElement doc) {
     logMessage("Parsing : " + doc);
     if (doc.getKind() != ElementKind.CLASS) {
       logMessage("Ignoring non-class: " + doc);
@@ -200,7 +198,7 @@ public class ConfigStandardDoclet extends StandardDoclet {
     }
   }
 
-  private String getDocComment(Element element) {
+  private static String getDocComment(Element element) {
     return docEnv.getElementUtils().getDocComment(element);
   }
 
@@ -211,14 +209,14 @@ public class ConfigStandardDoclet extends StandardDoclet {
     return s;
   }
 
-  public int optionLength(String option) {
+  public static int optionLength(String option) {
     if (option.equals(DEBUG_SWITCH)) {
       return 1;
     }
     return 0;
   }
 
-  public boolean validOptions(String[][] options, Reporter reporter) {
+  public static boolean validOptions(String[][] options, Reporter reporter) {
     for (String[] opt : options) {
       for (String o : opt) {
         if (o.equals(DEBUG_SWITCH)) {
