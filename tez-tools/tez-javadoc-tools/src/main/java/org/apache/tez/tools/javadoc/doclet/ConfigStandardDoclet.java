@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import jdk.javadoc.doclet.Doclet;
+import jdk.javadoc.doclet.StandardDoclet;
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Evolving;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
@@ -39,7 +41,9 @@ import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
-import com.sun.tools.doclets.standard.Standard;
+import jdk.javadoc.doclet.StandardDoclet;
+import jdk.javadoc.doclet.Doclet.Option;
+import jdk.javadoc.doclet.Reporter;
 
 public class ConfigStandardDoclet {
 
@@ -224,7 +228,13 @@ public class ConfigStandardDoclet {
   }
 
   public static int optionLength(String option) {
-    return Standard.optionLength(option);
+    StandardDoclet doclet = new StandardDoclet();
+    for (Doclet.Option opt : doclet.getSupportedOptions()) {
+      if (opt.getNames().contains(option)) {
+        return opt.getArgumentCount();
+      }
+    }
+    return -1;
   }
 
   public static boolean validOptions(String options[][], DocErrorReporter reporter) {
