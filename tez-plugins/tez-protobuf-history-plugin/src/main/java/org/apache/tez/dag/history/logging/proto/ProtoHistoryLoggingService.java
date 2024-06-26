@@ -73,7 +73,7 @@ public class ProtoHistoryLoggingService extends HistoryLoggingService {
   }
 
   @Override
-  protected void serviceInit(Configuration conf) {
+  protected void serviceInit(Configuration conf) throws java.lang.Exception {
     LOG.info("Initing ProtoHistoryLoggingService");
     setConfig(conf);
     loggingDisabled = !conf.getBoolean(TezConfiguration.TEZ_AM_HISTORY_LOGGING_ENABLED,

@@ -156,8 +156,8 @@ public class AdTezHook extends ProtoHistoryLoggingService {
                 }
         );
         dagSubmittedParams.put("vertices_plan_task_conf", mapper.writeValueAsString(taskPlanConfigurations));
-        dagSubmittedParams.put("dag_id", dagSubmittedEvent.getDagID().toString());
-        dagSubmittedParams.put("app_id", dagSubmittedEvent.getDagID().getApplicationId().toString());
+        dagSubmittedParams.put("dag_id", dagSubmittedEvent.getDAGID().toString());
+        dagSubmittedParams.put("app_id", dagSubmittedEvent.getDAGID().getApplicationId().toString());
         dagSubmittedParams.put("submit_time", dagSubmittedEvent.getSubmitTime());
         dagSubmittedParams.put("dag_name", dagSubmittedEvent.getDAGName());
         dagSubmittedParams.put("attempt_id", dagSubmittedEvent.getApplicationAttemptId().getAttemptId());
@@ -171,8 +171,8 @@ public class AdTezHook extends ProtoHistoryLoggingService {
         vertexInitParams.put("vertex_id", vertexInitializedEvent.getVertexID().toString());
         vertexInitParams.put("name", vertexInitializedEvent.getVertexName());
         vertexInitParams.put("processor_name", vertexInitializedEvent.getProcessorName());
-        vertexInitParams.put("dag_id", vertexInitializedEvent.getVertexID().getDAGId().toString());
-        vertexInitParams.put("app_id", vertexInitializedEvent.getVertexID().getDAGId().getApplicationId().toString());
+        vertexInitParams.put("dag_id", vertexInitializedEvent.getVertexID().getDAGID().toString());
+        vertexInitParams.put("app_id", vertexInitializedEvent.getVertexID().getDAGID().getApplicationId().toString());
         vertexInitParams.put("init_time", vertexInitializedEvent.getInitedTime());
         vertexInitParams.put("num_task", vertexInitializedEvent.getNumTasks());
         return mapper.writeValueAsString(vertexInitParams);
@@ -182,8 +182,8 @@ public class AdTezHook extends ProtoHistoryLoggingService {
         Map<String, Object> vertexFinishedParams = new HashMap<>();
         vertexFinishedParams.put("vertex_id", vertexFinishedEvent.getVertexID().toString());
         vertexFinishedParams.put("name", vertexFinishedEvent.getVertexName());
-        vertexFinishedParams.put("dag_id", vertexFinishedEvent.getVertexID().getDAGId().toString());
-        vertexFinishedParams.put("app_id", vertexFinishedEvent.getVertexID().getDAGId().getApplicationId().toString());
+        vertexFinishedParams.put("dag_id", vertexFinishedEvent.getVertexID().getDAGID().toString());
+        vertexFinishedParams.put("app_id", vertexFinishedEvent.getVertexID().getDAGID().getApplicationId().toString());
         vertexFinishedParams.put("diagnostics", vertexFinishedEvent.getDiagnostics());
         vertexFinishedParams.put("num_task", vertexFinishedEvent.getNumTasks());
         vertexFinishedParams.put("start_time", vertexFinishedEvent.getStartTime());
@@ -247,8 +247,8 @@ public class AdTezHook extends ProtoHistoryLoggingService {
                 }
         );
         dagFinishedParams.put("vertices_plan_task_conf", mapper.writeValueAsString(taskPlanConfigurations));
-        dagFinishedParams.put("dag_id", dagFinishedEvent.getDagID().toString());
-        dagFinishedParams.put("app_id", dagFinishedEvent.getDagID().getApplicationId().toString());
+        dagFinishedParams.put("dag_id", dagFinishedEvent.getDAGID().toString());
+        dagFinishedParams.put("app_id", dagFinishedEvent.getDAGID().getApplicationId().toString());
         dagFinishedParams.put("dag_name", dagFinishedEvent.getDagName());
         dagFinishedParams.put("state", dagFinishedEvent.getState());
         dagFinishedParams.put("start_time", dagFinishedEvent.getStartTime());
