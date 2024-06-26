@@ -34,7 +34,7 @@
 
     <packageManagerScript>node/yarn/dist/bin/yarn.js</packageManagerScript>
 
-    <allow-root-build>--allow-root=false</allow-root-build>
+    <allow-root-build>--allow-root=true</allow-root-build>
 
     <skipTests>false</skipTests>
   </properties>
