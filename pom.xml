@@ -24,7 +24,7 @@
   <groupId>org.apache.tez</groupId>
   <artifactId>tez</artifactId>
   <packaging>pom</packaging>
-  <version>0.10.3</version>
+  <version>0.10.3.3.3.6.0-1</version>
   <name>tez</name>
 
   <licenses>
@@ -73,7 +73,7 @@
     <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
     <frontend-maven-plugin.version>1.8.0</frontend-maven-plugin.version>
     <guava.version>32.0.1-jre</guava.version>
-    <hadoop.version>3.3.6</hadoop.version>
+    <hadoop.version>3.3.6.3.3.6.0-1</hadoop.version>
     <jdk.tools.version>1.8</jdk.tools.version>
     <jersey.version>1.19</jersey.version>
     <jettison.version>1.5.4</jettison.version>
@@ -108,22 +108,18 @@
     <connection>${scm.url}</connection>
   </scm>
 
-  <distributionManagement>
+ <distributionManagement>
     <repository>
-      <id>${distMgmtStagingId}</id>
-      <name>${distMgmtStagingName}</name>
-      <url>${distMgmtStagingUrl}</url>
-    </repository>
-    <snapshotRepository>
-      <id>${distMgmtSnapshotsId}</id>
-      <name>${distMgmtSnapshotsName}</name>
-      <url>${distMgmtSnapshotsUrl}</url>
-    </snapshotRepository>
-    <site>
-      <id>tez.apache.org</id>
-      <url>scp://tez.apache.org</url>
-    </site>
-  </distributionManagement>
+      <id>nexus-releases</id>
+      <name>Releases</name>
+     <url>https://repo1.acceldata.dev/repository/odp-release/</url>
+   </repository>
+   <snapshotRepository>
+     <id>nexus-snapshots</id>
+     <name>Snapshot</name>
+     <url>https://repo1.acceldata.dev/repository/odp-snapshot/</url>
+   </snapshotRepository>
+ </distributionManagement>
 
   <repositories>
     <repository>
@@ -131,7 +127,19 @@
       <name>${distMgmtSnapshotsName}</name>
       <url>${distMgmtSnapshotsUrl}</url>
     </repository>
+    <repository>
+            <id>acceldata repo</id>
+            <name>acceldata repo</name>
+            <url>https://repo1.acceldata.dev/repository/odp-central/</url>
+            <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+	</repository>
   </repositories>
+
 
   <pluginRepositories>
     <pluginRepository>
