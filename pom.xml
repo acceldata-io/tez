@@ -91,6 +91,10 @@
     <netty.version>4.1.94.Final</netty.version>
     <pig.version>0.13.0</pig.version>
     <protobuf.version>3.21.1</protobuf.version>
+    <jackson.codehaus.version.hadoop>1.9.2</jackson.codehaus.version.hadoop> <!-- transitive, used by hadoop in tests -->
+    <jackson.version.hadoop>2.13.2</jackson.version.hadoop> <!-- transitive, used by hadoop in tests -->
+    <jackson.core.version.tez>2.13.2</jackson.core.version.tez> <!-- core, used in tez -->
+    <jackson.databind.version.tez>2.13.2.2</jackson.databind.version.tez> <!-- databind, used in tez -->
     <snappy-java.version>1.1.10.4</snappy-java.version>
     <protoc-jar-maven-plugin.version>3.11.4</protoc-jar-maven-plugin.version>
     <protoc.path>${env.PROTOC_PATH}</protoc.path>
@@ -259,6 +263,17 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.tez</groupId>
+        <artifactId>tez-protobuf-history-plugin</artifactId>
+        <version>${project.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
         <groupId>org.apache.pig</groupId>
         <artifactId>pig</artifactId>
         <version>${pig.version}</version>
@@ -293,7 +308,6 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-reload4j</artifactId>
         <version>${slf4j.version}</version>
-	<scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -459,6 +473,10 @@
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
           </exclusion>
+         <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -561,12 +579,41 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>*</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.hadoop</groupId>
         <artifactId>hadoop-yarn-server-timeline-pluginstorage</artifactId>
         <version>${hadoop.version}</version>
+     <exclusions>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-yarn-server-timelineservice</artifactId>
+        <version>${hadoop.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.hadoop</groupId>
@@ -574,6 +621,12 @@
         <version>${hadoop.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
+      <exclusions>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.hadoop</groupId>
@@ -616,6 +669,10 @@
             <groupId>io.netty</groupId>
             <artifactId>netty</artifactId>
           </exclusion>
+        <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -650,6 +707,10 @@
           <exclusion>
             <groupId>io.netty</groupId>
             <artifactId>netty</artifactId>
+          </exclusion>
+        <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -713,6 +774,18 @@
             <artifactId>*</artifactId>
           </exclusion>
           <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-core</artifactId>
           </exclusion>
@@ -736,6 +809,10 @@
             <groupId>io.netty</groupId>
             <artifactId>netty</artifactId>
           </exclusion>
+        <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -744,6 +821,23 @@
         <version>${hadoop.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
+       <exclusions>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-hdfs-client</artifactId>
+        <version>${hadoop.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
@@ -795,6 +889,12 @@
         <groupId>com.sun.jersey</groupId>
         <artifactId>jersey-json</artifactId>
         <version>${jersey.version}</version>
+       <exclusions>
+          <exclusion>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
@@ -812,6 +912,41 @@
         <groupId>org.fusesource.leveldbjni</groupId>
         <artifactId>leveldbjni-all</artifactId>
         <version>${leveldbjni-all.version}</version>
+      </dependency>
+     <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version.hadoop}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version.hadoop}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version.hadoop}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version.hadoop}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-json-provider</artifactId>
+        <version>${jackson.version.hadoop}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.xerial.snappy</groupId>
+        <artifactId>snappy-java</artifactId>
+        <version>${snappy-java.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
