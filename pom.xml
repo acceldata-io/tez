@@ -64,9 +64,9 @@
     <jersey.version>1.19</jersey.version>
     <slf4j.version>1.7.35</slf4j.version>
     <jackson.codehaus.version.hadoop>1.9.2</jackson.codehaus.version.hadoop> <!-- transitive, used by hadoop in tests -->
-    <jackson.version.hadoop>2.13.2</jackson.version.hadoop> <!-- transitive, used by hadoop in tests -->
-    <jackson.core.version.tez>2.13.2</jackson.core.version.tez> <!-- core, used in tez -->
-    <jackson.databind.version.tez>2.13.2.2</jackson.databind.version.tez> <!-- databind, used in tez -->
+    <jackson.version.hadoop>2.12.7</jackson.version.hadoop> <!-- transitive, used by hadoop in tests -->
+    <jackson.core.version.tez>2.12.7</jackson.core.version.tez> <!-- core, used in tez -->
+    <jackson.databind.version.tez>2.12.7.1</jackson.databind.version.tez> <!-- databind, used in tez -->
     <protobuf.version>2.5.0</protobuf.version>
     <snappy-java.version>1.1.10.4</snappy-java.version>
     <protoc.path>${env.PROTOC_PATH}</protoc.path>
