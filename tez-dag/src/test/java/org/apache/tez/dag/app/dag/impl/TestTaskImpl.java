@@ -769,8 +769,8 @@ public class TestTaskImpl {
 
     // The task should now have succeeded
     assertTaskSucceededState();
-    verify(mockTask.stateChangeNotifier).taskSucceeded(any(String.class), eq(taskId),
-        eq(mockTask.getLastAttempt().getID().getId()));
+    verify(mockTask.stateChangeNotifier).taskSucceeded(any(), eq(taskId),
+        eq(mockTask.getLastAttempt().getTaskAttemptID().getId()));
 
     ArgumentCaptor<DAGHistoryEvent> argumentCaptor = ArgumentCaptor.forClass(DAGHistoryEvent.class);
     verify(mockHistoryHandler).handle(argumentCaptor.capture());
@@ -818,8 +818,8 @@ public class TestTaskImpl {
 
     // The task should now have succeeded
     assertTaskSucceededState();
-    verify(mockTask.stateChangeNotifier).taskSucceeded(any(String.class), eq(taskId),
-        eq(mockTask.getLastAttempt().getID().getId()));
+    verify(mockTask.stateChangeNotifier).taskSucceeded(any(), eq(taskId),
+        eq(mockTask.getLastAttempt().getTaskAttemptID().getId()));
 
     eventHandler.events.clear();
     // Now kill the attempt after it has succeeded
@@ -982,8 +982,8 @@ public class TestTaskImpl {
 
     // The task should now have succeeded and sent kill to other attempt
     assertTaskSucceededState();
-    verify(mockTask.stateChangeNotifier).taskSucceeded(any(String.class), eq(taskId),
-        eq(firstAttempt.getID().getId()));
+    verify(mockTask.stateChangeNotifier).taskSucceeded(any(), eq(taskId),
+        eq(firstAttempt.getTaskAttemptID().getId()));
     @SuppressWarnings("rawtypes")
     Event event = eventHandler.events.get(eventHandler.events.size()-1);
     assertEquals(TaskAttemptEventType.TA_KILL_REQUEST, event.getType());
@@ -1019,8 +1019,8 @@ public class TestTaskImpl {
 
     // The task should now have succeeded and sent kill to other attempt
     assertTaskSucceededState();
-    verify(mockTask.stateChangeNotifier).taskSucceeded(any(String.class), eq(taskId),
-        eq(firstAttempt.getID().getId()));
+    verify(mockTask.stateChangeNotifier).taskSucceeded(any(), eq(taskId),
+        eq(firstAttempt.getTaskAttemptID().getId()));
     @SuppressWarnings("rawtypes")
     Event event = eventHandler.events.get(eventHandler.events.size()-1);
     assertEquals(TaskAttemptEventType.TA_KILL_REQUEST, event.getType());
