@@ -592,6 +592,10 @@ public class TaskAttemptImpl implements TaskAttempt,
     return attemptId;
   }
 
+  public TezTaskAttemptID getTaskAttemptID() {
+    return attemptId;
+  }
+
   @Override
   public TezTaskID getTaskID() {
     return attemptId.getTaskID();
