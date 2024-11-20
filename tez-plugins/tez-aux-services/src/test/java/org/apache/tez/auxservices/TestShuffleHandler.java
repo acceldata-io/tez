@@ -24,7 +24,12 @@ import org.apache.hadoop.util.DiskChecker.DiskErrorException;
 import static org.junit.Assert.assertTrue;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,6 +47,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.Checksum;
 
@@ -54,6 +60,7 @@ import org.apache.hadoop.io.DataOutputBuffer;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableUtils;
 import org.apache.hadoop.io.nativeio.NativeIO;
+import org.apache.hadoop.yarn.server.api.AuxiliaryLocalPathHandler;
 import org.apache.tez.runtime.library.common.security.SecureShuffleUtils;
 import org.apache.tez.common.security.JobTokenIdentifier;
 import org.apache.tez.common.security.JobTokenSecretManager;
@@ -95,7 +102,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1087,7 +1093,7 @@ public class TestShuffleHandler {
       shuffle = new ShuffleHandler();
       shuffle.setRecoveryPath(new Path(tmpDir.toString()));
       shuffle.init(conf);
-    
+
       try {
         shuffle.start();
         Assert.fail("Incompatible version, should expect fail here.");
@@ -1319,7 +1325,7 @@ public class TestShuffleHandler {
     final ChannelHandlerContext mockCtx =
         mock(ChannelHandlerContext.class);
     final Channel mockCh = mock(AbstractChannel.class);
-    final ChannelPipeline mockPipeline = Mockito.mock(ChannelPipeline.class);
+    final ChannelPipeline mockPipeline = mock(ChannelPipeline.class);
 
     // Mock HttpRequest and ChannelFuture
     final FullHttpRequest httpRequest = createHttpRequest();
@@ -1329,11 +1335,11 @@ public class TestShuffleHandler {
         new ShuffleHandler.TimeoutHandler();
 
     // Mock Netty Channel Context and Channel behavior
-    Mockito.doReturn(mockCh).when(mockCtx).channel();
-    Mockito.when(mockCh.pipeline()).thenReturn(mockPipeline);
-    Mockito.when(mockPipeline.get(Mockito.any(String.class))).thenReturn(timerHandler);
+    doReturn(mockCh).when(mockCtx).channel();
+    when(mockCh.pipeline()).thenReturn(mockPipeline);
+    when(mockPipeline.get(any(String.class))).thenReturn(timerHandler);
     when(mockCtx.channel()).thenReturn(mockCh);
-    Mockito.doReturn(mockFuture).when(mockCh).writeAndFlush(Mockito.any(Object.class));
+    doReturn(mockFuture).when(mockCh).writeAndFlush(any());
     when(mockCh.writeAndFlush(Object.class)).thenReturn(mockFuture);
 
     final ShuffleHandler sh = new MockShuffleHandler();
@@ -1409,8 +1415,8 @@ public class TestShuffleHandler {
       final List<ShuffleHandler.ReduceMapFileCount> listenerList) {
     final ChannelFuture mockFuture = mock(ChannelFuture.class);
     when(mockFuture.channel()).thenReturn(mockCh);
-    Mockito.doReturn(true).when(mockFuture).isSuccess();
-    Mockito.doAnswer(new Answer<Object>() {
+    doReturn(true).when(mockFuture).isSuccess();
+    doAnswer(new Answer<Object>() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
         //Add ReduceMapFileCount listener to a list
@@ -1420,7 +1426,7 @@ public class TestShuffleHandler {
               invocation.getArguments()[0]);
         return null;
       }
-    }).when(mockFuture).addListener(Mockito.any(
+    }).when(mockFuture).addListener(any(
         ShuffleHandler.ReduceMapFileCount.class));
     return mockFuture;
   }
@@ -1431,5 +1437,62 @@ public class TestShuffleHandler {
       uri = uri.concat("&map=attempt_12345_1_m_" + i + "_0");
     }
     return new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, uri);
+  }
+
+  private static class TestAuxiliaryLocalPathHandler
+      implements AuxiliaryLocalPathHandler {
+    @Override
+    public Path getLocalPathForRead(String path) throws IOException {
+      return new Path(TEST_DIR.getAbsolutePath(), path);
+    }
+
+    @Override
+    public Path getLocalPathForWrite(String path) throws IOException {
+      return new Path(TEST_DIR.getAbsolutePath());
+    }
+
+    @Override
+    public Path getLocalPathForWrite(String path, long size)
+        throws IOException {
+      return new Path(TEST_DIR.getAbsolutePath());
+    }
+
+    @Override
+    public Iterable<Path> getAllLocalPathsForRead(String path)
+        throws IOException {
+      ArrayList<Path> paths = new ArrayList<>();
+      paths.add(new Path(TEST_DIR.getAbsolutePath(), path));
+      return paths;
+    }
+  }
+
+  private Configuration getInitialConf() {
+    Configuration conf = new Configuration();
+    conf.set(HADOOP_TMP_DIR, TEST_DIR.getAbsolutePath());
+    // 0 as config, should be dynamically chosen by netty
+    conf.setInt(ShuffleHandler.SHUFFLE_PORT_CONFIG_KEY, 0);
+    return conf;
+  }
+
+  private ShuffleHandler getShuffleHandlerWithNoVerify() {
+    return new ShuffleHandler() {
+      private AuxiliaryLocalPathHandler pathHandler = new TestAuxiliaryLocalPathHandler();
+
+      @Override
+      protected Shuffle getShuffle(Configuration conf) {
+        // replace the shuffle handler with one stubbed for testing
+        return new Shuffle(conf) {
+          @Override
+          protected void verifyRequest(String appid, ChannelHandlerContext ctx, HttpRequest request,
+              HttpResponse response, URL requestUri) throws IOException {
+            // Do nothing.
+          }
+        };
+      }
+      @Override
+      public AuxiliaryLocalPathHandler getAuxiliaryLocalPathHandler() {
+        return pathHandler;
+      }
+    };
   }
 }

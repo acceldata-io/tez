@@ -22,7 +22,9 @@ import org.apache.tez.dag.app.MockClock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -108,6 +110,7 @@ import org.apache.tez.dag.app.rm.AMSchedulerEventTAEnded;
 import org.apache.tez.dag.app.rm.AMSchedulerEventTALaunchRequest;
 import org.apache.tez.dag.app.rm.container.AMContainerMap;
 import org.apache.tez.dag.app.rm.container.ContainerContextMatcher;
+import org.apache.tez.dag.app.rm.node.AMNodeTracker;
 import org.apache.tez.dag.history.DAGHistoryEvent;
 import org.apache.tez.dag.history.HistoryEventHandler;
 import org.apache.tez.dag.history.events.TaskAttemptFinishedEvent;
@@ -127,7 +130,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,8 +177,14 @@ public class TestTaskAttempt {
   private void createMockVertex(Configuration conf) {
     mockVertex = mock(Vertex.class);
     when(mockVertex.getServicePluginInfo()).thenReturn(servicePluginInfo);
-    when(mockVertex.getVertexConfig()).thenReturn(
-        new VertexImpl.VertexConfigImpl(conf));
+    when(mockVertex.getVertexConfig()).thenReturn(new VertexImpl.VertexConfigImpl(conf));
+    AppContext appContext = mock(AppContext.class);
+    when(appContext.getTaskScheduerIdentifier(anyString())).thenReturn(0);
+    when(mockVertex.getAppContext()).thenReturn(appContext);
+    AMNodeTracker nodeTracker = mock(AMNodeTracker.class);
+    when(nodeTracker.getNumNodes(anyInt())).thenReturn(10);
+    when(nodeTracker.getNumActiveNodes(anyInt())).thenReturn(8);
+    when(appContext.getNodeTracker()).thenReturn(nodeTracker);
   }
 
   @Test(timeout = 5000)
@@ -1911,7 +1919,7 @@ public class TestTaskAttempt {
 
     assertEquals(true, taImpl.inputFailedReported);
     int expectedEventsAfterFetchFailure = expectedEventsTillSucceeded + 2;
-    arg.getAllValues().clear();
+    arg = ArgumentCaptor.forClass(Event.class);
     verify(eventHandler, times(expectedEventsAfterFetchFailure)).handle(arg.capture());
     Event e = verifyEventType(
         arg.getAllValues().subList(expectedEventsTillSucceeded,
@@ -2182,10 +2190,9 @@ public class TestTaskAttempt {
     when(destTaskAttemptId.getTaskID()).thenReturn(mock(TezTaskID.class));
     when(destTaskAttemptId.getTaskID().getVertexID()).thenReturn(mock(TezVertexID.class));
     when(appCtx.getCurrentDAG()).thenReturn(mock(DAG.class));
-    when(appCtx.getCurrentDAG().getVertex(Mockito.any(TezVertexID.class)))
+    when(appCtx.getCurrentDAG().getVertex(any(TezVertexID.class)))
         .thenReturn(mock(Vertex.class));
-    when(appCtx.getCurrentDAG().getVertex(Mockito.any(TezVertexID.class)).getRunningTasks())
-        .thenReturn(100);
+    when(mock(Vertex.class).getRunningTasks()).thenReturn(100);
 
     EventMetaData mockMeta = mock(EventMetaData.class);
     when(mockMeta.getTaskAttemptID()).thenReturn(destTaskAttemptId);
