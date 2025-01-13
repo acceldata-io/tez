@@ -61,7 +61,8 @@
     "phantomjs-prebuilt": "2.1.13"
   },
   "dependencies": {
-    "em-tgraph": "0.0.14"
+    "em-tgraph": "0.0.14",
+    "minimatch": "^3.0.5"
   },
   "resolutions": {
     "**/form-data/async": "2.6.4",
