@@ -32,4 +32,4 @@ else
     echo "Application log was written into $TMP"
 fi
 
-python "$DIR/logsplit.py" "$TMP"
+ambari-python-wrap "$DIR/logsplit.py" "$TMP"
