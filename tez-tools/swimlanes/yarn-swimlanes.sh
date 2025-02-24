@@ -32,4 +32,4 @@ else
 fi
 echo "History was written into $TMP"
 
-python "$DIR/swimlane.py" -o "$APPID.svg" "$TMP"
+ambari-python-wrap "$DIR/swimlane.py" -o "$APPID.svg" "$TMP"
