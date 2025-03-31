@@ -2783,6 +2783,7 @@ public class DAGAppMaster extends AbstractService {
       for (int i = 0; i < descriptors.size(); i++) {
         if (descriptors.get(i).getEntityName().equals(TezConstants.getTezYarnServicePluginName())) {
           foundYarn = true;
+          break;
         }
       }
       if (!foundYarn) {
