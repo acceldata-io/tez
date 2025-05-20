@@ -20,7 +20,7 @@
   <parent>
     <artifactId>tez-plugins</artifactId>
     <groupId>org.apache.tez</groupId>
-    <version>0.10.4</version>
+    <version>0.10.4.3.3.6.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>tez-aux-services</artifactId>
