@@ -106,7 +106,7 @@
       <artifactId>hadoop-mapreduce-client-shuffle</artifactId>
       <scope>test</scope>
     </dependency>
-</dependencies>
+  </dependencies>
 
   <build>
     <!--

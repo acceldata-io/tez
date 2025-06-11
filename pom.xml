@@ -91,10 +91,6 @@
     <netty.version>4.1.119.Final</netty.version>
     <pig.version>0.13.0</pig.version>
     <protobuf.version>3.25.5</protobuf.version>
-    <jackson.codehaus.version.hadoop>1.9.2</jackson.codehaus.version.hadoop> <!-- transitive, used by hadoop in tests -->
-    <jackson.version.hadoop>2.13.5</jackson.version.hadoop> <!-- transitive, used by hadoop in tests -->
-    <jackson.core.version.tez>2.13.2</jackson.core.version.tez> <!-- core, used in tez -->
-    <jackson.databind.version.tez>2.13.2.2</jackson.databind.version.tez> <!-- databind, used in tez -->
     <snappy-java.version>1.1.10.4</snappy-java.version>
     <protoc-jar-maven-plugin.version>3.11.4</protoc-jar-maven-plugin.version>
     <protoc.path>${env.PROTOC_PATH}</protoc.path>
@@ -112,7 +108,7 @@
     <connection>${scm.url}</connection>
   </scm>
 
- <distributionManagement>
+  <distributionManagement>
     <repository>
       <id>nexus-releases</id>
       <name>Releases</name>
@@ -132,21 +128,21 @@
       <url>${distMgmtSnapshotsUrl}</url>
     </repository>
     <repository>
-            <id>acceldata repo</id>
-            <name>acceldata repo</name>
-            <url>https://repo1.acceldata.dev/repository/odp-central/</url>
-            <releases>
+      <id>acceldata repo</id>
+      <name>acceldata repo</name>
+      <url>https://repo1.acceldata.dev/repository/odp-central/</url>
+      <releases>
         <enabled>true</enabled>
       </releases>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
-	</repository>
+    </repository>
     <repository>
-            <id>acceldata staging repo</id>
-            <name>acceldata staging repo</name>
-            <url>https://repo1.acceldata.dev/repository/odp-staging-central/</url>
-            <releases>
+      <id>acceldata staging repo</id>
+      <name>acceldata staging repo</name>
+      <url>https://repo1.acceldata.dev/repository/odp-staging-central/</url>
+      <releases>
         <enabled>true</enabled>
       </releases>
       <snapshots>
@@ -154,7 +150,6 @@
       </snapshots>
     </repository>
   </repositories>
-
 
   <pluginRepositories>
     <pluginRepository>
@@ -261,12 +256,6 @@
         <groupId>org.apache.tez</groupId>
         <artifactId>tez-protobuf-history-plugin</artifactId>
         <version>${project.version}</version>
-        <exclusions>
-            <exclusion>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>*</artifactId>
-            </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.tez</groupId>
@@ -314,17 +303,17 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-reload4j</artifactId>
         <version>${slf4j.version}</version>
-       <scope>provided</scope>
-       <exclusions>
-    <exclusion>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </exclusion>
-    <exclusion>
-      <groupId>ch.qos.reload4j</groupId>
-      <artifactId>reload4j</artifactId>
-    </exclusion>
-  </exclusions>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>ch.qos.reload4j</groupId>
+            <artifactId>reload4j</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -490,10 +479,6 @@
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
           </exclusion>
-         <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -596,41 +581,12 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>*</artifactId>
           </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.hadoop</groupId>
         <artifactId>hadoop-yarn-server-timeline-pluginstorage</artifactId>
         <version>${hadoop.version}</version>
-     <exclusions>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.hadoop</groupId>
-        <artifactId>hadoop-yarn-server-timelineservice</artifactId>
-        <version>${hadoop.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.hadoop</groupId>
@@ -638,12 +594,6 @@
         <version>${hadoop.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
-      <exclusions>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.hadoop</groupId>
@@ -686,10 +636,6 @@
             <groupId>io.netty</groupId>
             <artifactId>netty</artifactId>
           </exclusion>
-        <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -724,10 +670,6 @@
           <exclusion>
             <groupId>io.netty</groupId>
             <artifactId>netty</artifactId>
-          </exclusion>
-        <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -791,18 +733,6 @@
             <artifactId>*</artifactId>
           </exclusion>
           <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-core</artifactId>
           </exclusion>
@@ -826,10 +756,6 @@
             <groupId>io.netty</groupId>
             <artifactId>netty</artifactId>
           </exclusion>
-        <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -838,23 +764,6 @@
         <version>${hadoop.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
-       <exclusions>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.hadoop</groupId>
-        <artifactId>hadoop-hdfs-client</artifactId>
-        <version>${hadoop.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
@@ -878,9 +787,9 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-       <groupId>com.google.protobuf</groupId>
-       <artifactId>protobuf-java</artifactId>
-       <version>${protobuf.version}</version>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>${protobuf.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
@@ -900,18 +809,12 @@
       <dependency>
         <groupId>com.sun.jersey</groupId>
         <artifactId>jersey-client</artifactId>
-       <version>${jersey.version}</version>
+        <version>${jersey.version}</version>
       </dependency>
       <dependency>
         <groupId>com.sun.jersey</groupId>
         <artifactId>jersey-json</artifactId>
         <version>${jersey.version}</version>
-       <exclusions>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
@@ -929,26 +832,6 @@
         <groupId>org.fusesource.leveldbjni</groupId>
         <artifactId>leveldbjni-all</artifactId>
         <version>${leveldbjni-all.version}</version>
-      </dependency>
-     <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>${jackson.version.hadoop}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-annotations</artifactId>
-        <version>${jackson.version.hadoop}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version.hadoop}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.jaxrs</groupId>
-        <artifactId>jackson-jaxrs-json-provider</artifactId>
-        <version>${jackson.version.hadoop}</version>
       </dependency>
       <dependency>
         <groupId>org.xerial.snappy</groupId>
@@ -1169,25 +1052,25 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore />
+                    <ignore/>
                   </action>
                 </pluginExecution>
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
-         <plugin>
+        <plugin>
           <groupId>ro.isdc.wro4j</groupId>
           <artifactId>wro4j-maven-plugin</artifactId>
           <version>${wro4j-maven-plugin.version}</version>
-            <dependencies>
-              <!-- TODO: Remove this dependency after upgrading wro4j-maven-plugin to 1.8.1 or later. -->
-              <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>2.18.0</version>
-              </dependency>
-            </dependencies>
+          <dependencies>
+            <!-- TODO: Remove this dependency after upgrading wro4j-maven-plugin to 1.8.1 or later. -->
+            <dependency>
+              <groupId>org.mockito</groupId>
+              <artifactId>mockito-core</artifactId>
+              <version>2.18.0</version>
+            </dependency>
+          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -1273,16 +1156,16 @@
         </configuration>
       </plugin>
       <plugin>
-       <!-- OWASP's dependency-check plugin will scan the third party
-            dependencies of this project for known CVEs (security
-            vulnerabilities against them). It will produce a report
-            in target/dependency-check-report.html. To invoke, run
-            'mvn dependency-check:aggregate'
-       -->
-       <groupId>org.owasp</groupId>
-       <artifactId>dependency-check-maven</artifactId>
-     </plugin>
-   </plugins>
+        <!-- OWASP's dependency-check plugin will scan the third party
+             dependencies of this project for known CVEs (security
+             vulnerabilities against them). It will produce a report
+             in target/dependency-check-report.html. To invoke, run
+             'mvn dependency-check:aggregate'
+        -->
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+      </plugin>
+    </plugins>
   </build>
 
   <profiles>
