@@ -20,7 +20,7 @@
   <parent>
     <artifactId>tez</artifactId>
     <groupId>org.apache.tez</groupId>
-    <version>0.10.4.3.3.6.1-SNAPSHOT</version>
+    <version>0.10.4.3.3.6.2-1</version>
   </parent>
 
   <artifactId>tez-ext-service-tests</artifactId>
@@ -106,7 +106,7 @@
       <artifactId>hadoop-mapreduce-client-shuffle</artifactId>
       <scope>test</scope>
     </dependency>
-</dependencies>
+  </dependencies>
 
   <build>
     <!--
