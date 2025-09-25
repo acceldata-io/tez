@@ -60,7 +60,7 @@
     <guava.version>32.0.1-jre</guava.version>
     <hadoop.version>3.2.3.3.2.3.4-2</hadoop.version>
     <mockito-core.version>4.3.1</mockito-core.version>
-    <netty.version>4.1.94.Final</netty.version>
+    <netty.version>4.1.127.Final</netty.version>
     <pig.version>0.13.0</pig.version>
     <jersey.version>1.19</jersey.version>
     <slf4j.version>1.7.35</slf4j.version>
