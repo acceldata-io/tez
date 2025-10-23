@@ -36,8 +36,18 @@
             <outputDirectory>/lib</outputDirectory>
             <excludes>
               <exclude>*:*:test-jar</exclude>
-              <exclude>org.apache.tez:*</exclude>
+              <exclude>org.apache.tez:tez-api</exclude>
+              <exclude>org.apache.tez:tez-common</exclude>
+              <exclude>org.apache.tez:tez-dag</exclude>
+              <exclude>org.apache.tez:tez-examples</exclude>
+              <exclude>org.apache.tez:tez-tests</exclude>
+              <exclude>org.apache.tez:hadoop-shim-*</exclude>
               <exclude>jline:jline</exclude>
+              <!-- Exclude Jackson JARs since they are shaded into tez-protobuf-history-plugin -->
+              <exclude>com.fasterxml.jackson.core:jackson-core</exclude>
+              <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
+              <exclude>com.fasterxml.jackson.core:jackson-annotations</exclude>
+              <exclude>com.fasterxml.jackson.module:jackson-module-jaxb-annotations</exclude>
             </excludes>
           </dependencySet>
         </dependencySets>
@@ -53,4 +63,13 @@
       </includes>
     </fileSet>
   </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
+      <outputDirectory>/lib</outputDirectory>
+      <includes>
+        <include>org.apache.tez:tez-protobuf-history-plugin</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
 </assembly>
