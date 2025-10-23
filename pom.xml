@@ -221,11 +221,6 @@
       </dependency>
       <dependency>
         <groupId>org.apache.tez</groupId>
-        <artifactId>tez-protobuf-history-plugin</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tez</groupId>
         <artifactId>tez-yarn-timeline-history</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
@@ -933,12 +928,6 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-annotations</artifactId>
-        <version>${jackson.version.hadoop}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>com.fasterxml.jackson.jaxrs</groupId>
         <artifactId>jackson-jaxrs-json-provider</artifactId>
         <version>${jackson.version.hadoop}</version>
@@ -1178,11 +1167,11 @@
                 <version>2.18.0</version>
               </dependency>
             </dependencies>
-           <plugin>
-             <groupId>org.apache.maven.plugins</groupId>
-             <artifactId>maven-shade-plugin</artifactId>
-             <version>3.4.1</version>
-           </plugin>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.4.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
