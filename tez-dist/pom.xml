@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.tez</groupId>
     <artifactId>tez</artifactId>
-    <version>0.10.1.3.2.3.3-SNAPSHOT</version>
+    <version>0.10.1.3.2.3.4-SNAPSHOT</version>
   </parent>
   <artifactId>tez-dist</artifactId>
 
@@ -48,6 +48,37 @@
       <artifactId>tez-tests</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
+    </dependency>
+    <!-- Jackson 2.16.1 dependencies for runtime packaging -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version.hadoop}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.version.hadoop}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version.hadoop}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-json-provider</artifactId>
+      <version>${jackson.version.hadoop}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-jaxb-annotations</artifactId>
+      <version>${jackson.version.hadoop}</version>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 

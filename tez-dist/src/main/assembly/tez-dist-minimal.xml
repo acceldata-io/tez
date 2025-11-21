@@ -50,6 +50,19 @@
               <exclude>org.apache.tez:*</exclude>
             </excludes>
           </dependencySet>
+          <!-- Explicitly include Jackson 2.16.1 dependencies -->
+          <dependencySet>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+              <include>com.fasterxml.jackson.core:jackson-core</include>
+              <include>com.fasterxml.jackson.core:jackson-annotations</include>
+              <include>com.fasterxml.jackson.core:jackson-databind</include>
+              <include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider</include>
+              <include>com.fasterxml.jackson.module:jackson-module-jaxb-annotations</include>
+            </includes>
+          </dependencySet>
         </dependencySets>
       </binaries>
     </moduleSet>
