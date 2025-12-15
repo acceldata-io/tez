@@ -20,7 +20,7 @@
   <parent>
     <artifactId>tez</artifactId>
     <groupId>org.apache.tez</groupId>
-    <version>0.10.4.3.3.6.2-1</version>
+    <version>0.10.4.3.3.6.2-102</version>
   </parent>
 
   <artifactId>tez-ext-service-tests</artifactId>
