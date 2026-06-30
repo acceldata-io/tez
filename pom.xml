@@ -60,14 +60,14 @@
     <guava.version>32.0.1-jre</guava.version>
     <hadoop.version>3.2.3.3.2.3.7-2</hadoop.version>
     <mockito-core.version>4.3.1</mockito-core.version>
-    <netty.version>4.1.132.Final</netty.version>
+    <netty.version>4.1.133.Final</netty.version>
     <pig.version>0.13.0</pig.version>
     <jersey.version>1.19</jersey.version>
     <slf4j.version>1.7.35</slf4j.version>
     <jackson.codehaus.version.hadoop>1.9.2</jackson.codehaus.version.hadoop> <!-- transitive, used by hadoop in tests -->
     <jackson.version.hadoop>2.16.1</jackson.version.hadoop> <!-- transitive, used by hadoop in tests -->
-    <jackson.core.version.tez>2.16.1</jackson.core.version.tez> <!-- core, used in tez -->
-    <jackson.databind.version.tez>2.16.1</jackson.databind.version.tez> <!-- databind, used in tez -->
+    <jackson.core.version.tez>2.18.6</jackson.core.version.tez> <!-- core, used in tez -->
+    <jackson.databind.version.tez>2.18.6</jackson.databind.version.tez> <!-- databind, used in tez -->
     <protobuf.version>2.5.0</protobuf.version>
     <snappy-java.version>1.1.10.4</snappy-java.version>
     <protoc.path>${env.PROTOC_PATH}</protoc.path>
@@ -269,7 +269,7 @@
       <dependency>
         <groupId>org.asynchttpclient</groupId>
         <artifactId>async-http-client</artifactId>
-        <version>2.12.4</version>
+        <version>2.15.0</version>
         <exclusions>
           <exclusion>
             <groupId>io.netty</groupId>
@@ -328,7 +328,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.8.0</version>
+        <version>2.14.0</version>
       </dependency>
       <dependency>
         <groupId>commons-lang</groupId>
@@ -339,6 +339,23 @@
         <groupId>com.squareup.okio</groupId>
         <artifactId>okio</artifactId>
         <version>1.17.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jdom</groupId>
+        <artifactId>jdom2</artifactId>
+        <version>2.0.6.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-configuration2</artifactId>
+        <version>2.15.0</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-bom</artifactId>
+        <version>${netty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
