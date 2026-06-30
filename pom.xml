@@ -336,6 +336,11 @@
         <version>2.6</version>
       </dependency>
       <dependency>
+        <groupId>com.squareup.okio</groupId>
+        <artifactId>okio</artifactId>
+        <version>1.17.6</version>
+      </dependency>
+      <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-all</artifactId>
         <scope>compile</scope>
