@@ -57,7 +57,7 @@
     <distMgmtStagingUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distMgmtStagingUrl>
 
     <!--dependency versions in alphabetical order-->
-    <asynchttpclient.version>2.12.4</asynchttpclient.version>
+    <asynchttpclient.version>2.15.0</asynchttpclient.version>
     <bouncycastle.version>1.78</bouncycastle.version>
     <build-helper-maven-plugin.version>1.8</build-helper-maven-plugin.version>
     <buildnumber-maven-plugin.version>1.1</buildnumber-maven-plugin.version>
@@ -325,6 +325,24 @@
         <artifactId>commons-lang</artifactId>
         <version>${commons-lang.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-configuration2</artifactId>
+        <version>2.15.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.squareup.okio</groupId>
+        <artifactId>okio</artifactId>
+        <version>3.4.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.squareup.okio</groupId>
+        <artifactId>okio-jvm</artifactId>
+        <version>3.4.0</version>
+      </dependency>
+
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-all</artifactId>
