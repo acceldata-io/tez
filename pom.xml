@@ -40,9 +40,9 @@
   </organization>
 
   <properties>
-        <jackson.databind.version.tez>2.18.8</jackson.databind.version.tez>
-        <jackson.core.version.tez>2.18.8</jackson.core.version.tez>
-        <jackson.version>2.18.8</jackson.version>
+        <jackson.databind.version.tez>2.21.4</jackson.databind.version.tez>
+        <jackson.core.version.tez>2.21.4</jackson.core.version.tez>
+        <jackson.version>2.21.4</jackson.version>
     <!-- Build Properties -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
