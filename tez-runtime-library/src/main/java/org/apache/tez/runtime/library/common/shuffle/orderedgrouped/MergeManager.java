@@ -398,7 +398,7 @@ public class MergeManager implements FetchedInputAllocatorOrderedGrouped {
 
   public synchronized void waitForShuffleToMergeMemory() throws InterruptedException {
     long startTime = System.currentTimeMillis();
-    while(usedMemory > memoryLimit && !closed) {
+    while(usedMemory > memoryLimit && !isShutdown()) {
       wait(1000);
       // Avoid deadlock: if memory is over limit but commitMemory is below mergeThreshold,
       // no merge will be triggered automatically. Force a merge to free memory. The check
