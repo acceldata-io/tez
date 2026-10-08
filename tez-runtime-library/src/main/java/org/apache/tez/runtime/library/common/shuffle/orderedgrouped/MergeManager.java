@@ -398,11 +398,18 @@ public class MergeManager implements FetchedInputAllocatorOrderedGrouped {
 
   public synchronized void waitForShuffleToMergeMemory() throws InterruptedException {
     long startTime = System.currentTimeMillis();
-    while(usedMemory > memoryLimit) {
+    while(usedMemory > memoryLimit && !closed) {
       wait(1000);
-      if (usedMemory > memoryLimit && !inMemoryMapOutputs.isEmpty()) {
-        // Avoid deadlock: if memory is over limit but commitMemory is below mergeThreshold,
-        // no merge will be triggered automatically. Force a merge to free memory.
+      // Avoid deadlock: if memory is over limit but commitMemory is below mergeThreshold,
+      // no merge will be triggered automatically. Force a merge to free memory. The check
+      // covers both inMemoryMapOutputs and inMemoryMergedMapOutputs, because
+      // startMemToDiskMerge() drains merged outputs into inMemoryMapOutputs before merging
+      // them; guarding on inMemoryMapOutputs alone can leave a stall when only merged
+      // outputs remain. Only force when a merge is not already running (an in-progress merge
+      // would make the call a no-op while still emitting a misleading log line).
+      if (usedMemory > memoryLimit
+          && (!inMemoryMapOutputs.isEmpty() || !inMemoryMergedMapOutputs.isEmpty())
+          && !inMemoryMerger.isInProgress()) {
         LOG.info("Memory limit exceeded with no merge triggered (usedMemory={}, commitMemory={}, mergeThreshold={})."
             + " Forcing in-memory merge to avoid deadlock.", usedMemory, commitMemory, mergeThreshold);
         startMemToDiskMerge();

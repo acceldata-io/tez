@@ -308,26 +308,41 @@ public class TestMergeManager {
     assertTrue("usedMemory should exceed memoryLimit", mergeManager.getUsedMemory() > 2000000L);
     assertTrue("commitMemory should be below mergeThreshold", mergeManager.getCommitMemory() < 1800000L);
 
-    // waitForShuffleToMergeMemory() should complete without deadlock:
-    // the fix forces a merge when memory is exhausted but commitMemory < mergeThreshold
+    // waitForShuffleToMergeMemory() should complete (the fix forces a merge when memory is
+    // exhausted but commitMemory < mergeThreshold), and the forced merge should actually free
+    // memory. Asserting only that the wait thread exits could pass if the thread left for
+    // another reason (e.g. an interrupt), so also assert that usedMemory dropped — which proves a
+    // real merge occurred. Comparing before vs after (rather than against an exact threshold)
+    // keeps the test robust to exact byte sizes.
+    final long usedMemoryBeforeWait = mergeManager.getUsedMemory();
+    final long[] usedMemoryAfterWait = new long[1];
     Thread waitThread = new Thread(() -> {
       try {
         mergeManager.waitForShuffleToMergeMemory();
+        usedMemoryAfterWait[0] = mergeManager.getUsedMemory();
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
+        throw new RuntimeException("waitForShuffleToMergeMemory was interrupted", e);
       }
     });
-    waitThread.start();
-    waitThread.join(15000);
-    assertFalse("waitForShuffleToMergeMemory deadlocked", waitThread.isAlive());
-
-    if (waitThread.isAlive()) {
-      waitThread.interrupt();
+    try {
+      waitThread.start();
+      waitThread.join(15000);
+      assertFalse("waitForShuffleToMergeMemory deadlocked", waitThread.isAlive());
+      assertTrue(
+          "forced merge should have released memory: usedMemory " + usedMemoryBeforeWait
+              + " before vs " + usedMemoryAfterWait[0] + " after",
+          usedMemoryAfterWait[0] < usedMemoryBeforeWait);
+    } finally {
+      if (waitThread.isAlive()) {
+        waitThread.interrupt();
+        waitThread.join(2000);
+      }
+      mo3.abort();
+      mo4.abort();
+      mo5.abort();
+      mergeManager.close(true);
     }
-    mo3.abort();
-    mo4.abort();
-    mo5.abort();
-    mergeManager.close(true);
   }
 
   @Test
