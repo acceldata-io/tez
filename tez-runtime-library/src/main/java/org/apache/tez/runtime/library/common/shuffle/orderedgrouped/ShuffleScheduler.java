@@ -381,7 +381,7 @@ class ShuffleScheduler {
     SecretKey jobTokenSecret = ShuffleUtils
         .getJobTokenSecretFromTokenBytes(inputContext
             .getServiceConsumerMetaData(auxiliaryService));
-    this.jobTokenSecretManager = new JobTokenSecretManager(jobTokenSecret);
+    this.jobTokenSecretManager = new JobTokenSecretManager(jobTokenSecret, conf);
 
     final ExecutorService fetcherRawExecutor;
     if (conf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_SHUFFLE_FETCHER_USE_SHARED_POOL,
@@ -1175,7 +1175,19 @@ class ShuffleScheduler {
     } else {
       isInputFinished = isInputFinished(id.getInputIdentifier());
     }
-    return !obsoleteInputs.contains(id) && !isInputFinished;
+    return !isObsoleteInputAttemptIdentifier(id) && !isInputFinished;
+  }
+
+  private boolean isObsoleteInputAttemptIdentifier(InputAttemptIdentifier input) {
+    InputAttemptIdentifier obsoleteInput;
+    Iterator<InputAttemptIdentifier> obsoleteInputsIter = obsoleteInputs.iterator();
+    while (obsoleteInputsIter.hasNext()) {
+      obsoleteInput = obsoleteInputsIter.next();
+      if (input.includes(obsoleteInput)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public synchronized List<InputAttemptIdentifier> getMapsForHost(MapHost host) {
