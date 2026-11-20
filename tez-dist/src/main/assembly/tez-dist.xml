@@ -44,6 +44,19 @@
       </binaries>
     </moduleSet>
   </moduleSets>
+  <dependencySets>
+    <!-- The SLF4J binding is "provided" in every module (see dependencyManagement), so the
+         moduleSet above never picks it up. Package it from tez-dist's own runtime dependency. -->
+    <dependencySet>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputDirectory>/lib</outputDirectory>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <includes>
+        <include>org.slf4j:slf4j-reload4j</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
   <fileSets>
     <fileSet>
       <directory>dist-files/full/</directory>
